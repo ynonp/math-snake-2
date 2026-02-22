@@ -74,3 +74,36 @@ export interface ScoreChangeEvent {
   newScore: number;
   delta: number;
 }
+
+/**
+ * Theme names for the game
+ */
+export type ThemeName = 'dark' | 'light' | 'retro' | 'ocean' | 'highContrast';
+
+/**
+ * Canvas colors for a theme
+ */
+export interface CanvasColors {
+  background: string;
+  grid: string;
+  snakeHead: string;
+  snakeBody: string;
+  food: string;
+  foodStem: string;
+  dimOverlay: string;
+}
+
+/**
+ * Complete theme definition
+ */
+export interface Theme {
+  name: ThemeName;
+  displayName: string;
+  canvas: CanvasColors;
+  css: Record<string, string>;
+}
+
+/**
+ * Theme change callback
+ */
+export type ThemeChangeCallback = (themeName: ThemeName) => void;

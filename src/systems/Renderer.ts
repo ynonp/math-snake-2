@@ -3,15 +3,17 @@
  * Handles all canvas rendering
  */
 
-import { Position } from '../types';
+import { Position, CanvasColors } from '../types';
 import { GAME_CONFIG } from '../config/gameConfig';
 
 export class Renderer {
   private ctx: CanvasRenderingContext2D;
   private readonly canvasWidth: number;
   private readonly canvasHeight: number;
+  private colors: CanvasColors;
 
-  constructor(private canvas: HTMLCanvasElement) {
+  constructor(private canvas: HTMLCanvasElement, initialColors: CanvasColors) {
+    this.colors = initialColors;
     // Set canvas size
     this.canvasWidth = GAME_CONFIG.GRID_WIDTH * GAME_CONFIG.CELL_SIZE;
     this.canvasHeight = GAME_CONFIG.GRID_HEIGHT * GAME_CONFIG.CELL_SIZE;
@@ -27,10 +29,18 @@ export class Renderer {
   }
 
   /**
+   * Update theme colors
+   * @param colors - New canvas colors to use
+   */
+  public updateColors(colors: CanvasColors): void {
+    this.colors = colors;
+  }
+
+  /**
    * Clear the canvas
    */
   clear(): void {
-    this.ctx.fillStyle = GAME_CONFIG.COLORS.BACKGROUND;
+    this.ctx.fillStyle = this.colors.background;
     this.ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
   }
 
@@ -38,7 +48,7 @@ export class Renderer {
    * Draw grid lines
    */
   drawGrid(): void {
-    this.ctx.strokeStyle = GAME_CONFIG.COLORS.GRID;
+    this.ctx.strokeStyle = this.colors.grid;
     this.ctx.lineWidth = 0.5;
 
     // Vertical lines
@@ -67,8 +77,8 @@ export class Renderer {
     body.forEach((segment, index) => {
       const isHead = index === 0;
       this.ctx.fillStyle = isHead
-        ? GAME_CONFIG.COLORS.SNAKE_HEAD
-        : GAME_CONFIG.COLORS.SNAKE_BODY;
+        ? this.colors.snakeHead
+        : this.colors.snakeBody;
 
       const x = segment.x * GAME_CONFIG.CELL_SIZE;
       const y = segment.y * GAME_CONFIG.CELL_SIZE;
@@ -83,7 +93,7 @@ export class Renderer {
 
       // Draw eyes on head
       if (isHead) {
-        this.ctx.fillStyle = GAME_CONFIG.COLORS.BACKGROUND;
+        this.ctx.fillStyle = this.colors.background;
         const eyeSize = 3;
         const eyeOffset = 7;
         this.ctx.fillRect(x + eyeOffset, y + eyeOffset, eyeSize, eyeSize);
@@ -101,7 +111,7 @@ export class Renderer {
    * Draw food
    */
   drawFood(position: Position): void {
-    this.ctx.fillStyle = GAME_CONFIG.COLORS.FOOD;
+    this.ctx.fillStyle = this.colors.food;
     
     const x = position.x * GAME_CONFIG.CELL_SIZE;
     const y = position.y * GAME_CONFIG.CELL_SIZE;
@@ -115,7 +125,7 @@ export class Renderer {
     this.ctx.fill();
 
     // Draw stem
-    this.ctx.strokeStyle = '#4a4a4a';
+    this.ctx.strokeStyle = this.colors.foodStem;
     this.ctx.lineWidth = 2;
     this.ctx.beginPath();
     this.ctx.moveTo(centerX, y + 3);
@@ -127,7 +137,7 @@ export class Renderer {
    * Dim the background (for overlays)
    */
   dimBackground(): void {
-    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    this.ctx.fillStyle = this.colors.dimOverlay;
     this.ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
   }
 

@@ -5,12 +5,11 @@
  */
 
 import { GameState, StateChangeEvent } from '../types';
-
-type StateChangeListener = (event: StateChangeEvent) => void;
+import { EventEmitter } from '../utils/EventEmitter';
 
 export class StateManager {
   private currentState: GameState;
-  private listeners: StateChangeListener[] = [];
+  private emitter = new EventEmitter<StateChangeEvent>();
 
   constructor(initialState: GameState = GameState.MENU) {
     this.currentState = initialState;
@@ -42,26 +41,12 @@ export class StateManager {
     };
 
     this.currentState = newState;
-    this.notifyListeners(event);
+    this.emitter.emit(event);
   }
 
-  /**
-   * Subscribe to state changes
-   */
-  onStateChange(listener: StateChangeListener): () => void {
-    this.listeners.push(listener);
-    
-    // Return unsubscribe function
-    return () => {
-      this.listeners = this.listeners.filter((l) => l !== listener);
-    };
-  }
-
-  /**
-   * Notify all listeners of state change
-   */
-  private notifyListeners(event: StateChangeEvent): void {
-    this.listeners.forEach((listener) => listener(event));
+  /** Subscribe to state changes. Returns an unsubscribe function. */
+  onStateChange(listener: (event: StateChangeEvent) => void): () => void {
+    return this.emitter.subscribe(listener);
   }
 
   /**

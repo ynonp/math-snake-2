@@ -3,8 +3,10 @@
  * Manages all DOM-based UI elements and overlays
  */
 
-import { GameOverReason, GameState } from '../types';
+import { GameOverReason, GameState, ThemeName } from '../types';
 import { GAME_CONFIG } from '../config/gameConfig';
+import { ThemeManager } from '../core/ThemeManager';
+import { THEMES } from '../config/themes';
 
 export class UIManager {
   // Screen elements
@@ -25,6 +27,12 @@ export class UIManager {
   // Game over elements
   private gameOverReason: HTMLElement;
 
+  // Theme selector elements
+  private themeButton: HTMLButtonElement;
+  private themeNameDisplay: HTMLElement;
+  private themeDropdown: HTMLElement;
+  private themeOptions: NodeListOf<HTMLElement>;
+
   // Callbacks
   private submitAnswerCallback: ((answer: string) => void) | null = null;
 
@@ -42,6 +50,12 @@ export class UIManager {
     this.finalScoreDisplay = this.getElement('final-score');
     
     this.gameOverReason = this.getElement('gameover-reason');
+
+    // Theme selector elements
+    this.themeButton = this.getElement('theme-button') as HTMLButtonElement;
+    this.themeNameDisplay = this.getElement('theme-name');
+    this.themeDropdown = this.getElement('theme-dropdown');
+    this.themeOptions = document.querySelectorAll('.theme-option');
 
     this.setupEventListeners();
   }
@@ -190,5 +204,58 @@ export class UIManager {
         // Game over shown separately via showGameOver
         break;
     }
+  }
+
+  /**
+   * Initialize theme selector with ThemeManager
+   */
+  initThemeSelector(themeManager: ThemeManager): void {
+    // Update initial display
+    this.updateThemeDisplay(themeManager.getCurrentThemeName());
+
+    // Toggle dropdown on button click
+    this.themeButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.themeDropdown.classList.toggle('hidden');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', () => {
+      this.themeDropdown.classList.add('hidden');
+    });
+
+    // Handle theme selection
+    this.themeOptions.forEach((option) => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const themeName = option.getAttribute('data-theme') as ThemeName;
+        if (themeName) {
+          themeManager.setTheme(themeName);
+          this.themeDropdown.classList.add('hidden');
+        }
+      });
+    });
+
+    // Subscribe to theme changes
+    themeManager.onThemeChange((themeName) => {
+      this.updateThemeDisplay(themeName);
+    });
+  }
+
+  /**
+   * Update theme display name and active state
+   */
+  private updateThemeDisplay(themeName: ThemeName): void {
+    const theme = THEMES[themeName];
+    this.themeNameDisplay.textContent = theme.displayName;
+
+    // Update active state on options
+    this.themeOptions.forEach((option) => {
+      if (option.getAttribute('data-theme') === themeName) {
+        option.classList.add('active');
+      } else {
+        option.classList.remove('active');
+      }
+    });
   }
 }

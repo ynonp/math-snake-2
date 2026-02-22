@@ -5,12 +5,11 @@
 
 import { GAME_CONFIG } from '../config/gameConfig';
 import { ScoreChangeEvent } from '../types';
-
-type ScoreChangeListener = (event: ScoreChangeEvent) => void;
+import { EventEmitter } from '../utils/EventEmitter';
 
 export class ScoreSystem {
   private score: number;
-  private listeners: ScoreChangeListener[] = [];
+  private emitter = new EventEmitter<ScoreChangeEvent>();
 
   constructor() {
     this.score = GAME_CONFIG.STARTING_SCORE;
@@ -45,7 +44,7 @@ export class ScoreSystem {
       delta: newScore - oldScore,
     };
 
-    this.notifyListeners(event);
+    this.emitter.emit(event);
   }
 
   /**
@@ -62,23 +61,9 @@ export class ScoreSystem {
     this.updateScore(GAME_CONFIG.STARTING_SCORE);
   }
 
-  /**
-   * Subscribe to score changes
-   */
-  onScoreChange(listener: ScoreChangeListener): () => void {
-    this.listeners.push(listener);
-
-    // Return unsubscribe function
-    return () => {
-      this.listeners = this.listeners.filter((l) => l !== listener);
-    };
-  }
-
-  /**
-   * Notify all listeners of score change
-   */
-  private notifyListeners(event: ScoreChangeEvent): void {
-    this.listeners.forEach((listener) => listener(event));
+  /** Subscribe to score changes. Returns an unsubscribe function. */
+  onScoreChange(listener: (event: ScoreChangeEvent) => void): () => void {
+    return this.emitter.subscribe(listener);
   }
 }
 

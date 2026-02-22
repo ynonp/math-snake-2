@@ -6,6 +6,7 @@
 import { GameLoop } from './core/GameLoop';
 import { StateManager } from './core/StateManager';
 import { InputHandler } from './core/InputHandler';
+import { ThemeManager } from './core/ThemeManager';
 import { Snake } from './entities/Snake';
 import { Food } from './entities/Food';
 import { Renderer } from './systems/Renderer';
@@ -21,6 +22,7 @@ export class Game {
   private gameLoop: GameLoop;
   private stateManager: StateManager;
   private inputHandler: InputHandler;
+  private themeManager: ThemeManager;
   
   // Entities
   private snake: Snake;
@@ -39,6 +41,7 @@ export class Game {
     // Initialize core systems
     this.stateManager = new StateManager(GameState.MENU);
     this.inputHandler = new InputHandler(this.stateManager);
+    this.themeManager = new ThemeManager(); // Initialize with default 'dark' theme
     this.gameLoop = new GameLoop(
       (deltaTime) => this.update(deltaTime),
       () => this.render()
@@ -49,13 +52,14 @@ export class Game {
     this.food = new Food();
 
     // Initialize systems
-    this.renderer = new Renderer(canvas);
+    this.renderer = new Renderer(canvas, this.themeManager.getCanvasColors());
     this.mathSystem = new MathSystem();
     this.scoreSystem = new ScoreSystem();
     this.uiManager = new UIManager();
 
     this.setupEventHandlers();
     this.setupStateListeners();
+    this.setupThemeHandlers();
   }
 
   /**
@@ -83,6 +87,19 @@ export class Game {
   private setupStateListeners(): void {
     this.stateManager.onStateChange((event) => {
       this.uiManager.updateForState(event.to);
+    });
+  }
+
+  /**
+   * Setup theme handlers
+   */
+  private setupThemeHandlers(): void {
+    // Initialize theme selector UI
+    this.uiManager.initThemeSelector(this.themeManager);
+
+    // Update renderer when theme changes
+    this.themeManager.onThemeChange(() => {
+      this.renderer.updateColors(this.themeManager.getCanvasColors());
     });
   }
 
