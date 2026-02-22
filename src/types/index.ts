@@ -33,11 +33,20 @@ export enum GameState {
 }
 
 /**
+ * Math operation types
+ */
+export enum MathOperation {
+  MULTIPLY = 'MULTIPLY',
+  DIVIDE = 'DIVIDE',
+}
+
+/**
  * Math question data
  */
 export interface MathQuestion {
   num1: number;
   num2: number;
+  operation: MathOperation;
   correctAnswer: number;
 }
 

@@ -15,6 +15,7 @@ export const GAME_CONFIG = {
   // Math exercise settings
   MATH_MIN: 1,
   MATH_MAX: 10, // Results in multiplication problems 1-100
+  MATH_OPERATIONS: ['multiply', 'divide'] as const, // Allowed operations
 
   // Scoring
   CORRECT_POINTS: 10,
