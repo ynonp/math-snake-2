@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Math Snake - Learn Multiplication While Playing</title>
+    <link rel="icon" type="image/svg+xml" href="/snake-icon.svg" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Menu Screen -->
+      <div id="menu-screen" class="overlay">
+        <div class="overlay-content">
+          <h1>🐍 Math Snake</h1>
+          <p class="instructions">
+            Use <strong>WASD</strong> to move the snake<br>
+            Eat apples to trigger multiplication exercises<br>
+            Answer correctly: <span class="points-gain">+10 points</span><br>
+            Answer wrong: <span class="points-loss">-5 points</span><br>
+            Avoid walls and your own body!
+          </p>
+          <p class="start-hint">Press <strong>SPACE</strong> to Start</p>
+        </div>
+      </div>
+
+      <!-- Game Canvas -->
+      <canvas id="game-canvas"></canvas>
+
+      <!-- Math Question Overlay -->
+      <div id="math-overlay" class="overlay hidden">
+        <div class="overlay-content">
+          <h2 id="math-question">What is 7 × 8?</h2>
+          <input 
+            type="number" 
+            id="math-input" 
+            placeholder="Type your answer"
+            autocomplete="off"
+          />
+          <button id="math-submit">Submit Answer</button>
+          <p id="math-feedback" class="feedback"></p>
+        </div>
+      </div>
+
+      <!-- Game Over Screen -->
+      <div id="gameover-screen" class="overlay hidden">
+        <div class="overlay-content">
+          <h1>Game Over!</h1>
+          <p id="gameover-reason"></p>
+          <p class="final-score">Final Score: <span id="final-score">0</span></p>
+          <p class="start-hint">Press <strong>SPACE</strong> to Restart</p>
+        </div>
+      </div>
+
+      <!-- Score Display -->
+      <div id="score-display">Score: <span id="current-score">0</span></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
