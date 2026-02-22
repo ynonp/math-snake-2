@@ -5,7 +5,7 @@ A browser-based snake game that combines classic gameplay with multiplication pr
 ## 🎮 Game Rules
 
 - Use **WASD** keys to control the snake
-- Eat apples to trigger multiplication exercises (1-100 range)
+- Eat apples to trigger math exercises (multiplication and division)
 - **Correct answer**: +10 points, continue playing
 - **Wrong answer**: -5 points, continue playing
 - Avoid hitting walls or your own body
@@ -112,8 +112,9 @@ export const GAME_CONFIG = {
   GRID_HEIGHT: 20,          // Grid rows
   CELL_SIZE: 25,            // Cell size in pixels
   SNAKE_SPEED: 150,         // Speed in ms per move
-  MATH_MIN: 1,              // Min multiplication number
-  MATH_MAX: 10,             // Max multiplication number
+  MATH_MIN: 1,              // Min number used in math exercises
+  MATH_MAX: 10,             // Max number used in math exercises
+  MATH_OPERATIONS: ['multiply', 'divide'], // Allowed operations
   CORRECT_POINTS: 10,       // Points for correct answer
   WRONG_PENALTY: 5,         // Points lost for wrong answer
   // ... more settings
@@ -146,6 +147,7 @@ Edit `GAME_CONFIG.COLORS` in `src/config/gameConfig.ts`
 
 - Increase `SNAKE_SPEED` for faster gameplay
 - Modify `MATH_MIN` and `MATH_MAX` for harder math problems
+- Set `MATH_OPERATIONS` to `['multiply']` or `['divide']` to restrict to a single operation
 - Adjust point values for different scoring balance
 
 ### Grid Size
@@ -196,4 +198,4 @@ Perfect for learning modern web game development!
 
 ---
 
-**Enjoy the game and practice your multiplication tables!** 🎯🧮
+**Enjoy the game and practice your multiplication and division tables!** 🎯🧮

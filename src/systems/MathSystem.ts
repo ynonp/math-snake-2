@@ -1,28 +1,59 @@
 /**
  * Math System
- * Generates and validates multiplication exercises
+ * Generates and validates multiplication and division exercises
  */
 
-import { MathQuestion } from '../types';
+import { MathOperation, MathQuestion } from '../types';
 import { GAME_CONFIG } from '../config/gameConfig';
 
 export class MathSystem {
   private currentQuestion: MathQuestion | null = null;
 
   /**
-   * Generate a new multiplication question
+   * Generate a new math question (multiply or divide, chosen randomly from configured operations)
    */
   generateQuestion(): MathQuestion {
-    const num1 = this.getRandomNumber();
-    const num2 = this.getRandomNumber();
+    const operations = GAME_CONFIG.MATH_OPERATIONS;
+    const operation = operations[Math.floor(Math.random() * operations.length)];
 
-    this.currentQuestion = {
-      num1,
-      num2,
-      correctAnswer: num1 * num2,
-    };
+    if (operation === 'divide') {
+      this.currentQuestion = this.generateDivisionQuestion();
+    } else {
+      this.currentQuestion = this.generateMultiplicationQuestion();
+    }
 
     return this.currentQuestion;
+  }
+
+  /**
+   * Generate a multiplication question
+   */
+  private generateMultiplicationQuestion(): MathQuestion {
+    const num1 = this.getRandomNumber();
+    const num2 = this.getRandomNumber();
+    return {
+      num1,
+      num2,
+      operation: MathOperation.MULTIPLY,
+      correctAnswer: num1 * num2,
+    };
+  }
+
+  /**
+   * Generate a division question with an integer answer.
+   * Picks a divisor and quotient from the configured range, then computes
+   * the dividend so that dividend ÷ divisor = quotient exactly.
+   */
+  private generateDivisionQuestion(): MathQuestion {
+    const divisor = this.getRandomNumber();
+    const quotient = this.getRandomNumber();
+    const dividend = divisor * quotient;
+    return {
+      num1: dividend,
+      num2: divisor,
+      operation: MathOperation.DIVIDE,
+      correctAnswer: quotient,
+    };
   }
 
   /**
@@ -68,7 +99,9 @@ export class MathSystem {
       return '';
     }
 
-    return `${this.currentQuestion.num1} × ${this.currentQuestion.num2}`;
+    const { num1, num2, operation } = this.currentQuestion;
+    const symbol = operation === MathOperation.DIVIDE ? '÷' : '×';
+    return `${num1} ${symbol} ${num2}`;
   }
 
   /**

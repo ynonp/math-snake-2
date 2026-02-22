@@ -175,19 +175,27 @@ do {
 ---
 
 #### MathSystem.ts
-**Responsibility**: Generate and validate multiplication exercises
+**Responsibility**: Generate and validate multiplication and division exercises
 
 **Features**:
 - Configurable difficulty range (1-10 by default)
+- Configurable allowed operations (`MATH_OPERATIONS`: `'multiply'` and/or `'divide'`)
 - Answer validation with type checking
 - Current question state management
 
 **Math Generation**:
 ```typescript
+// Multiplication
 num1 = random(MATH_MIN, MATH_MAX)
 num2 = random(MATH_MIN, MATH_MAX)
 answer = num1 × num2
 // Range: 1×1=1 to 10×10=100
+
+// Division (always integer result)
+divisor  = random(MATH_MIN, MATH_MAX)
+quotient = random(MATH_MIN, MATH_MAX)
+dividend = divisor × quotient   // exact division guaranteed
+answer = quotient
 ```
 
 ---
@@ -499,7 +507,7 @@ The architecture is designed for easy extension:
 ### Planned Enhancements
 1. Add difficulty levels (easy/medium/hard)
 2. Progressive speed increase
-3. Different math operations (+, -, ÷)
+3. Additional math operations (+, -)
 4. Mobile touch support
 5. Sound effects and music
 6. High score persistence (localStorage)
